@@ -51,6 +51,7 @@ export default async function handler(
                     },
                     token,
                 });
+                
             } else {
                 return res
                     .status(400)

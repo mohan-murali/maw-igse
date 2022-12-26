@@ -1,6 +1,6 @@
 import { InputText } from "primereact/inputtext";
+import { useState } from "react";
 import { FieldValues, UseFormRegister, ValidationRule } from "react-hook-form";
-import {useState} from "react";
 
 export interface FloatLabelInputProps {
   id: string;
@@ -38,16 +38,16 @@ export const FloatLabelInput: React.FC<FloatLabelInputProps> = ({
     }
   }
   return (
-      <div className={className}>
+      <div className={`${className}`}>
         <span className="p-float-label">
           <InputText
               type={type}
               id={id}
               value={value}
               {...register(id, {
-                required: required,
+                required,
                 pattern: validationPattern,
-                maxLength: maxLength,
+                maxLength,
                 onChange: onTextChange
               })}
           />

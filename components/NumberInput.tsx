@@ -1,6 +1,5 @@
-import React, {useState} from "react";
-import {FieldValues, UseFormRegister, ValidationRule} from "react-hook-form";
-import {InputNumber, InputNumberValueChangeParams} from "primereact/inputnumber";
+import { InputNumber, InputNumberValueChangeParams } from "primereact/inputnumber";
+import React from "react";
 
 export interface NumberInputProps{
     id: string;

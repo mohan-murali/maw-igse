@@ -1,7 +1,6 @@
-import React, {useState} from "react";
-import {FieldValues, UseFormRegister} from "react-hook-form";
-import {Dropdown, DropdownChangeParams} from "primereact/dropdown";
-import {SelectItemOptionsType} from "primereact/selectitem";
+import { Dropdown, DropdownChangeParams } from "primereact/dropdown";
+import { SelectItemOptionsType } from "primereact/selectitem";
+import React from "react";
 
 export interface DropDownInputProps{
     id: string;
@@ -9,6 +8,7 @@ export interface DropDownInputProps{
     isError?: boolean;
     validationMessage?: string;
     className?:string;
+    optionLabel:string;
     label:string;
     placeholder:string;
     options?: SelectItemOptionsType;
@@ -25,16 +25,21 @@ export const DropDownInput: React.FC<DropDownInputProps>=({
     placeholder,
     options,
     value,
+    optionLabel,
     onChange
 }) => (
         <div className={className}>
+            <span className="p-float-label">
             <Dropdown
+                id={id}
                 options={options}
-                optionLabel={label}
+                optionLabel={optionLabel}
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
             />
+            <label htmlFor={id}>{label}</label>
+            </span>
             {required && isError && (
                 <small id={`${id}-help`} className="p-error p-d-block">
                     {validationMessage}
