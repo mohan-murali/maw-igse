@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
-import clientPromise from "../../lib/mongodb";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {user} from "../../models";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import clientPromise from "../../lib/mongodb";
+import { user } from "../../models";
 
 type Data = {
     message: string
@@ -31,6 +31,18 @@ export default async function handler(
             return res.status(400).json({message: "The email already exists"});
         }
 
+        if(req.body.voucherCode.length != 8){
+            return res.status(400).json({message: "The voucher code is not valid!"});
+        }
+
+        const existingVoucher = await db
+            .collection("customer")
+            .findOne({ voucherCode: req.body.voucherCode});
+
+        if(existingVoucher && existingVoucher._id){
+            return res.status(400).json({message: "The voucher code is not valid!"});
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
@@ -39,6 +51,9 @@ export default async function handler(
             password: hashedPassword,
             email: req.body.email,
             address: req.body.address,
+            propertyType: req.body.propertyType,
+            voucherCode: req.body.voucherCode,
+            numberOfBedroom: req.body.numberOfBedroom,
             isAdmin: false,
         });
         const userDetails = await db

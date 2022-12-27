@@ -8,7 +8,8 @@ export interface NumberInputProps{
     isError?: boolean;
     validationMessage?: string;
     className?:string;
-    value:number,
+    value:number;
+    placeholder?: string;
     onChange: (e: InputNumberValueChangeParams) => void;
 }
 export const NumberInput: React.FC<NumberInputProps> = ({
@@ -18,7 +19,8 @@ export const NumberInput: React.FC<NumberInputProps> = ({
     validationMessage,
     label, className,
     value,
-    onChange
+    onChange,
+    placeholder
 }) => {
     return(
         <div className={className}>
@@ -27,6 +29,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
                 inputId={id}
                 value={value}
                 onValueChange={onChange}
+                placeholder={placeholder}
             />
             {required && isError && (
                 <small id={`${id}-help`} className="p-error p-d-block">

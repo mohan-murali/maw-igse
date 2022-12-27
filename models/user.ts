@@ -3,4 +3,7 @@ export interface user {
     email: string;
     address: string;
     isAdmin: boolean;
+    propertyType?: string;
+    voucherCode?:string;
+    numberOfBedroom?: string;
 }

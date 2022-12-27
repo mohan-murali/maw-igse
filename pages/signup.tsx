@@ -1,16 +1,17 @@
 import axios from "axios";
 import { NextPage } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-    DropDownInput,
-    FloatLabelInput,
-    NumberInput,
-    PasswordInput
+  DropDownInput,
+  FloatLabelInput,
+  PasswordInput,
+  QrReaderInput,
 } from "../components";
 
 const SignUp: NextPage = () => {
@@ -21,7 +22,9 @@ const SignUp: NextPage = () => {
     formState: { errors },
   } = useForm();
 
+  const router = useRouter();
   const toast = useRef(null);
+  const [error, setError] = useState("");
 
   const showSuccess = () => {
     if (toast && toast.current)
@@ -36,14 +39,18 @@ const SignUp: NextPage = () => {
   const onSubmit = async (data: any) => {
     try {
       console.log(data);
+      setError("");
       const res = await axios.post("/api/signup", data);
       if (window) {
         window.localStorage.setItem("auth-token", res.data.token);
       }
+      router.push("/dashboard");
       showSuccess();
       console.log(res);
     } catch (ex) {
       console.log(ex);
+      //@ts-ignore
+      setError(ex.response.data.message);
     }
   };
   const propertyTypes = [
@@ -61,6 +68,11 @@ const SignUp: NextPage = () => {
       <div className="app flex justify-content-center align-items-center">
         <Card className="card flex p-3 shadow-4">
           <h5 className="text-center">Sign Up</h5>
+          {error && (
+            <div id={`validation-help`} className="p-error p-d-block pb-3">
+              {error}
+            </div>
+          )}
           <form className="p-fluid" onSubmit={handleSubmit(onSubmit)}>
             <FloatLabelInput
               className="field"
@@ -87,15 +99,23 @@ const SignUp: NextPage = () => {
               validationMessage="User Name is required"
               label="User Name"
             />
-            <PasswordInput
-              className="field"
-              id="password"
-              required
-              register={register}
-              isError={!!errors?.password?.type}
-              validationMessage="Password is required"
-              label="Password"
-              showFeedback
+            <Controller
+              name="password"
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <PasswordInput
+                  className="field"
+                  id="password"
+                  required
+                  isError={!!errors?.password?.type}
+                  validationMessage="Password is required"
+                  label="Password"
+                  showFeedback
+                  value={value}
+                  onChange={onChange}
+                />
+              )}
             />
             <FloatLabelInput
               id="address"
@@ -110,9 +130,10 @@ const SignUp: NextPage = () => {
               name="propertyType"
               control={control}
               rules={{ required: true }}
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <DropDownInput
-                  {...field}
+                  value={value}
+                  onChange={onChange}
                   required
                   className="field"
                   id="propertyType"
@@ -125,31 +146,33 @@ const SignUp: NextPage = () => {
                 />
               )}
             />
-            <Controller
-              name="numberOfBedroom"
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  required
-                  className="field"
-                  id="numberOfBedroom"
-                  label="Number of bedrooms"
-                  isError={!!errors?.propertyType?.type}
-                  validationMessage="Property Type is required"
-                />
-              )}
-            />
             <FloatLabelInput
-              id="voucherCode"
+              id="numberOfBedroom"
               required
+              type="number"
               className="field"
               register={register}
-              isError={!!errors?.voucherCode?.type}
-              maxLength={8}
-              validationMessage="voucher code is required"
-              label="Voucher Code"
+              isError={!!errors?.numberOfBedroom?.type}
+              validationMessage="You must enter the number of bedrooms"
+              label="Number of bedrooms"
+            />
+            <Controller
+              name="voucherCode"
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <QrReaderInput
+                  id="voucherCode"
+                  required
+                  className="field"
+                  isError={!!errors?.voucherCode?.type}
+                  maxLength={8}
+                  validationMessage="voucher code is required"
+                  label="Voucher Code"
+                  value={value}
+                  onChange={onChange}
+                />
+              )}
             />
             <div className="flex flex-column">
               <Button

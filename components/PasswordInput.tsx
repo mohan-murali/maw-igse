@@ -1,47 +1,47 @@
-import { Divider } from 'primereact/divider';
+import { Divider } from "primereact/divider";
 import { Password } from "primereact/password";
-import React, { useState } from "react";
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import React from "react";
 
 export interface PasswordInputProps {
   id: string;
   required: boolean;
-  register: UseFormRegister<FieldValues>;
   isError?: boolean;
   validationMessage?: string;
   className?: string;
   label: string;
-  showFeedback:boolean;
+  showFeedback: boolean;
+  value: string;
+  onChange: (e: any) => void;
 }
 
-export const PasswordInput: React.FC<PasswordInputProps> = ({
+export const  PasswordInput: React.FC<PasswordInputProps> =  ({
   id,
   required,
   isError,
   validationMessage,
-  register,
   className,
   label,
-  showFeedback
+  showFeedback,
+  value,
+  onChange,
 }) => {
-  const [value, setValue] = useState("");
   const onTextChange = (e: any) => {
-    setValue(e.target.value);
+    onChange(e.target.value);
   };
 
   const header = <h6>Pick a password</h6>;
-    const footer = (
-        <React.Fragment>
-            <Divider />
-            <p className="mt-2">Suggestions</p>
-            <ul className="pl-2 ml-2 mt-0" style={{lineHeight: '1.5'}}>
-                <li>At least one lowercase</li>
-                <li>At least one uppercase</li>
-                <li>At least one numeric</li>
-                <li>Minimum 8 characters</li>
-            </ul>
-        </React.Fragment>
-    );
+  const footer = (
+    <React.Fragment>
+      <Divider />
+      <p className="mt-2">Suggestions</p>
+      <ul className="pl-2 ml-2 mt-0" style={{ lineHeight: "1.5" }}>
+        <li>At least one lowercase</li>
+        <li>At least one uppercase</li>
+        <li>At least one numeric</li>
+        <li>Minimum 8 characters</li>
+      </ul>
+    </React.Fragment>
+  );
 
   return (
     <div className="field">
@@ -52,12 +52,9 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
           feedback={showFeedback}
           className={className}
           value={value}
-          header={showFeedback? header : undefined}
-          footer={showFeedback? footer : undefined}
-          {...register(id, {
-            required,
-            onChange: onTextChange,
-          })}
+          header={showFeedback ? header : undefined}
+          footer={showFeedback ? footer : undefined}
+          onChange={onChange}
         />
         <label htmlFor={id} className={isError ? "p-error" : ""}>
           {label}
