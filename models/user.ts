@@ -1,7 +1,7 @@
 export interface user {
-    userName: string;
+    userName?: string;
     email: string;
-    address: string;
+    address?: string;
     isAdmin: boolean;
     propertyType?: string;
     voucherCode?:string;

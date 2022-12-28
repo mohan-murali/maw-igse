@@ -36,7 +36,7 @@ export default async function handler(
         }
 
         const existingVoucher = await db
-            .collection("customer")
+            .collection("voucher")
             .findOne({ voucherCode: req.body.voucherCode});
 
         if(existingVoucher && existingVoucher._id){
@@ -47,15 +47,21 @@ export default async function handler(
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
         const newUser = await db.collection("customer").insertOne({
-            userName: req.body.userName,
+            // userName: req.body.userName,
             password: hashedPassword,
             email: req.body.email,
             address: req.body.address,
             propertyType: req.body.propertyType,
-            voucherCode: req.body.voucherCode,
             numberOfBedroom: req.body.numberOfBedroom,
-            isAdmin: false,
+            balance: 200,
+            isAdmin: true,
         });
+
+        await db.collection("voucher").insertOne({
+            userId: newUser.insertedId,
+            voucherCode: req.body.voucherCode
+        });
+
         const userDetails = await db
             .collection("customer")
             .findOne({ _id: newUser.insertedId});
@@ -66,9 +72,7 @@ export default async function handler(
             .json({
                 message: "user created successfully",
                 data:{
-                    userName:userDetails?.userName,
                     email:userDetails?.email,
-                    address:userDetails?.address,
                     isAdmin:userDetails?.isAdmin,
                 },
                 token

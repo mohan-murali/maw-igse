@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { useRef } from "react";
@@ -16,7 +17,13 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({}) =>
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    try{
+        console.log(data);
+        const res = await axios.post("/api/dashboard", data);
+        console.log(res);
+    } catch(e){
+        console.error(e);
+    }
   };
 
   const toast = useRef(null);

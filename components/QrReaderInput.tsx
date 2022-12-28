@@ -52,7 +52,6 @@ export const QrReaderInput: React.FC<QrReaderInputProps> = ({
           lastResult.current = result.text;
           onChange(result?.text);
           setShowQrReader(false);
-
         }
       }
 
