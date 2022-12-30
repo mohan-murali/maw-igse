@@ -1,9 +1,14 @@
+import jwt from "jsonwebtoken";
+import { ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../lib/mongodb";
 
 type Data = {
   message: string;
+  data?: any;
 };
+
+const JWT_KEY = process.env.JWT_KEY || "";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,12 +16,29 @@ export default async function handler(
 ) {
   try {
     const {
-      query: { id },
       method,
     } = req;
 
     const client = await clientPromise;
     const db = client.db("test-env");
+
+    const { token } = req.headers;
+
+    // Check if token is present
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "No token found. Authorization Denied" });
+    }
+
+
+    const tokenUser = jwt.verify(token as string, JWT_KEY) as any;
+
+        if(!tokenUser || !tokenUser.userId){
+          return res
+          .status(401)
+          .json({ message: "Invalid token. Access Denied" });
+        }
 
     switch (method) {
       case "POST":
@@ -78,6 +100,28 @@ export default async function handler(
         return res.status(200).json({
           message: "test",
         });
+      case "GET":
+        const userDetails = await db
+          .collection("customer")
+          .findOne({ _id: new ObjectId(tokenUser.userId) });
+
+          if (userDetails) {
+            const unpaidBills = await db.collection("bills")
+              .find({ email: { $eq: userDetails.email },
+              isPaid: { $eq: false}})
+              .toArray();
+
+              console.log(unpaidBills);
+
+                return res.status(200).json({
+                  message:"success",
+                  data: unpaidBills
+                })
+          } else {
+            return res.status(400).json({
+              message: "User not found",
+            });
+          }
     }
   } catch (ex) {
     console.error(ex);

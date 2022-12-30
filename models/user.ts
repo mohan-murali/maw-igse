@@ -6,4 +6,5 @@ export interface user {
     propertyType?: string;
     voucherCode?:string;
     numberOfBedroom?: string;
+    balance?:number;
 }

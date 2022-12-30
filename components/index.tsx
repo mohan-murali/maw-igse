@@ -1,3 +1,4 @@
+export * from "./CustomerPayment";
 export * from "./CustomerReadingsForm";
 export * from "./DateInput";
 export * from "./DropDownInput";

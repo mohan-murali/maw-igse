@@ -21,7 +21,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   className,
 }) => {
   return (
-    <div className={`${className} field col-12 md:col-6`}>
+    <div className={`${className}`}>
       <label htmlFor={id}>{label}</label>
       <Calendar
         id="icon"

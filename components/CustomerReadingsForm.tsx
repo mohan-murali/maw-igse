@@ -6,31 +6,67 @@ import { Controller, useForm } from "react-hook-form";
 import { DateInput } from "./DateInput";
 import { NumberInput } from "./NumberInput";
 
-export interface CustomerReadingsFormProps {}
+export interface CustomerReadingsFormProps {
+  email: string;
+}
 
-export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({}) => {
+export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
+  email,
+}) => {
   const {
     control,
     handleSubmit,
     register,
+    setValue,
     formState: { errors },
   } = useForm();
 
+  const toast = useRef(null);
+  const showSuccess = () => {
+    if (toast && toast.current)
+      //@ts-ignore
+      toast.current.show({
+        severity: "success",
+        summary: "Success Message",
+        detail: "Message Content",
+        life: 3000,
+      });
+  };
+
   const onSubmit = async (data: any) => {
-    try{
-        console.log(data);
-        const res = await axios.post("/api/dashboard", data);
-        console.log(res);
-    } catch(e){
-        console.error(e);
+    try {
+      console.log(data);
+      data.email = email;
+      const res = await axios.post("/api/dashboard", data, {
+        headers: {
+          token: window.localStorage.getItem("auth-token"),
+        },
+      });
+      console.log(res);
+      showSuccess();
+      resetFormDetail(data);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  const toast = useRef(null);
+  const resetFormDetail = (detail?: any) => {
+    if (detail) {
+      Object.keys(detail).forEach((k) => {
+        if (detail[k]) {
+          setValue(k, (detail as any)[k], {
+            shouldDirty: true,
+          });
+        }
+      });
+    }
+  };
+
   return (
     <div className="form-main">
-      <form className="p-fluid grid formgrid" onSubmit={handleSubmit(onSubmit)}>
+      <form className="p-fluid" onSubmit={handleSubmit(onSubmit)}>
         <DateInput
+          className="field"
           id="submissionDate"
           required
           register={register}
@@ -46,6 +82,7 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({}) =>
             <NumberInput
               {...field}
               required
+              className="field"
               id="dayReading"
               label="Meter Reading for Day (in kWh)"
               isError={!!errors?.dayReading?.type}
@@ -61,6 +98,7 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({}) =>
             <NumberInput
               {...field}
               required
+              className="field"
               id="nightReading"
               label="Meter Reading for Nigh (in kWh)"
               isError={!!errors?.nightReading?.type}
@@ -76,6 +114,7 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({}) =>
             <NumberInput
               {...field}
               required
+              className="field"
               id="gasReading"
               label="Gas meter reading (in kWh)"
               isError={!!errors?.gasReading?.type}

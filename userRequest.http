@@ -34,6 +34,7 @@ Content-Type: application/json
 
 POST http://localhost:3000/api/dashboard
 Content-Type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI0MDI1NTEsImV4cCI6MTY3MjQ4ODk1MX0._K865TVn0l0Wguv0E1-SwVSRT7hiuJ8x2ONFsWVkXr4
 
 {
   "email": "mohan123@gmail.com",
@@ -42,3 +43,12 @@ Content-Type: application/json
   "nightReading": 500,
   "gasReading": 1600
 }
+
+###
+GET http://localhost:3000/api/login
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzIzMjY1MDAsImV4cCI6MTY3MjQxMjkwMH0.KxxqJmOGHvudxRcry37o6-UTkI4DDbuZej4TAePN5Ys
+
+
+###
+GET http://localhost:3000/api/dashboard
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI0MDI1NTEsImV4cCI6MTY3MjQ4ODk1MX0._K865TVn0l0Wguv0E1-SwVSRT7hiuJ8x2ONFsWVkXr4
