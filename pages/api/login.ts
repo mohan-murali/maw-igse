@@ -29,6 +29,7 @@ export default async function handler(
 
     switch (method) {
       case "POST":
+        console.log(req.body);
         const { email, password } = req.body;
         if (!email || !password) {
           return res

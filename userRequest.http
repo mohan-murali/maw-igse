@@ -52,3 +52,26 @@ token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThh
 ###
 GET http://localhost:3000/api/dashboard
 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI0MDI1NTEsImV4cCI6MTY3MjQ4ODk1MX0._K865TVn0l0Wguv0E1-SwVSRT7hiuJ8x2ONFsWVkXr4
+
+
+###
+POST http://localhost:3000/api/customer
+Content-Type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI0ODUyMjgsImV4cCI6MTY3MjU3MTYyOH0.n8Z-fY5Fg8468sOOzQiWKSoL-qQRgctu-tuavPu-L10
+
+{
+  "email": "mohan123@gmail.com",
+  "currentBalance": 200,
+  "voucherCode":"XA35GJ9T"
+}
+
+###
+
+PUT http://localhost:3000/api/customer
+Content-Type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI0ODUyMjgsImV4cCI6MTY3MjU3MTYyOH0.n8Z-fY5Fg8468sOOzQiWKSoL-qQRgctu-tuavPu-L10
+
+{
+  "email": "mohan123@gmail.com",
+  "currentBalance": 414
+}

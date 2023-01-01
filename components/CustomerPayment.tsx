@@ -1,23 +1,24 @@
 import axios from "axios";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { QrReaderInput } from "./QrReaderInput";
 
 interface CustomerPaymentProps {
   email: string;
   amount: number;
+  fetchData: () => void;
 }
 
 export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
   email,
   amount,
+  fetchData,
 }) => {
   const [currentBill, setCurrentBill] = useState(0);
   const [error, setError] = useState("");
-  const fetchData = async () => {
-    console.log(amount);
+  const getData = useCallback(async () => {
     try {
       var res = await axios.get("/api/dashboard", {
         headers: {
@@ -34,11 +35,11 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
     } catch (e) {
       console.error(e);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    getData();
+  }, [getData]);
 
   const resetFormDetail = (detail?: any) => {
     if (detail) {
@@ -67,8 +68,23 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
   const onSubmit = async (data: any) => {
     try {
       console.log(data);
+      const res = await axios.put(
+        "/api/customer",
+        {
+          currentBalance: amount,
+          email,
+          voucherCode: data.voucherCode,
+        },
+        {
+          headers: {
+            token: window.localStorage.getItem("auth-token"),
+          },
+        }
+      );
+      console.log(res);
       showSuccess();
       resetFormDetail(data);
+      fetchData();
     } catch (e) {
       console.error(e);
     }
@@ -78,6 +94,21 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
     try {
       if (currentBill > amount) {
         setError("Your Balance is low. Please top up");
+      } else {
+        const res = await axios.put(
+          "/api/customer",
+          {
+            currentBalance: amount - currentBill,
+            email,
+          },
+          {
+            headers: {
+              token: window.localStorage.getItem("auth-token"),
+            },
+          }
+        );
+        console.log(res);
+        showSuccess();
       }
     } catch (e) {
       console.error(e);

@@ -45,7 +45,7 @@ const Dashboard: NextPage<Props> = () => {
               <CustomerReadingsForm email={email} />
             </TabPanel>
             <TabPanel header="Payment">
-              <CustomerPayment email={email} amount={amount} />
+              <CustomerPayment email={email} amount={amount} fetchData={fetchData}/>
             </TabPanel>
           </TabView>
         </Card>
