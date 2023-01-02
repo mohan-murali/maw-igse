@@ -13,7 +13,7 @@ export interface QrReaderInputProps {
   maxLength?: number;
   className?: string;
   value: string;
-  onChange: (e:any) => void;
+  onChange: (e: any) => void;
 }
 
 export const QrReaderInput: React.FC<QrReaderInputProps> = ({
@@ -26,49 +26,44 @@ export const QrReaderInput: React.FC<QrReaderInputProps> = ({
   label,
   className,
   value,
-  onChange
+  onChange,
 }) => {
   const [showQrReader, setShowQrReader] = useState(false);
-  const lastResult = useRef()
+  const lastResult = useRef();
   const onTextChange = (e: any) => {
     if (maxLength) {
       const text = e.target.value;
-      if (text.length < maxLength) {
+      if (text.length <= maxLength) {
         onChange(text);
       }
     } else {
-        onChange(e.target.value);
+      onChange(e.target.value);
     }
   };
 
-  const onReadResult = (result:any, error:any) => {
+  const onReadResult = (result: any, error: any) => {
     if (!!result) {
+      //@ts-ignore
+      if (result?.text) {
         //@ts-ignore
-        if (result?.text) {
-          //@ts-ignore
-          if (lastResult.current === result.text) {
-            return
-          }
-          lastResult.current = result.text;
-          onChange(result?.text);
-          setShowQrReader(false);
+        if (lastResult.current === result.text) {
+          return;
         }
+        lastResult.current = result.text;
+        onChange(result?.text);
+        setShowQrReader(false);
       }
+    }
 
-      if (!!error) {
-        console.info(error);
-      }
-  }
+    if (!!error) {
+      console.info(error);
+    }
+  };
 
   return (
     <div className={`${className}`}>
       <span className="p-float-label">
-        <InputText
-          type={type}
-          id={id}
-          value={value}
-          onChange={onTextChange}
-        />
+        <InputText type={type} id={id} value={value} onChange={onTextChange} />
         <label htmlFor={id}>{label}</label>
       </span>
       <Button

@@ -14,18 +14,7 @@ interface Props {
 const Dashboard: NextPage<Props> = () => {
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState(0);
-  const [token, setToken] = useState("");
   const toast = useRef(null);
-
-  useEffect(() => {
-    const authToken = window.localStorage.getItem("auth-token");
-    if (authToken) {
-      setToken(authToken);
-    } else {
-      router.push("/");
-      showError();
-    }
-  }, []);
 
   const showError = () => {
     if (toast && toast.current)
@@ -39,10 +28,15 @@ const Dashboard: NextPage<Props> = () => {
   };
 
   const fetchData = useCallback(async () => {
+    const authToken = window.localStorage.getItem("auth-token");
+    if (!authToken) {
+      router.push("/");
+      showError();
+    }
     try {
       const res = await axios.get("/api/login", {
         headers: {
-          token,
+          token: window.localStorage.getItem("auth-token"),
         },
       });
       console.log(res);
@@ -57,7 +51,7 @@ const Dashboard: NextPage<Props> = () => {
         showError();
       }
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchData();
