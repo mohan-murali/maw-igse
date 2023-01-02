@@ -11,7 +11,7 @@ interface Props {
   res: any;
 }
 
-const Dashboard: NextPage<Props> = () => {
+const AdminDashboard: NextPage<Props> = () => {
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState(0);
   const [token, setToken] = useState("");
@@ -87,7 +87,7 @@ const Dashboard: NextPage<Props> = () => {
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;
 
 // export const getServerSideProps: GetServerSideProps = async () => {
 //   // Fetch data from external API
