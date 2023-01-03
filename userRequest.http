@@ -22,10 +22,11 @@ Content-Type: application/json
 
 PUT http://localhost:3000/api/admin
 Content-Type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FjMDUxNzlhMjY1ZTE5OGUwOTE4NzciLCJpYXQiOjE2NzI3NzYyNjAsImV4cCI6MTY3Mjg2MjY2MH0.52g7GRMFOnaGubsa61-hF5ubq-0hly1gjDctv42SE6A
 
 {
   "electricityDay" : 0.34,
-  "electricityDay": 0.2,
+  "electricityNight": 0.2,
   "gas": 0.1,
   "standingCharge": 0.74
 }
@@ -34,14 +35,14 @@ Content-Type: application/json
 
 POST http://localhost:3000/api/dashboard
 Content-Type: application/json
-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI0MDI1NTEsImV4cCI6MTY3MjQ4ODk1MX0._K865TVn0l0Wguv0E1-SwVSRT7hiuJ8x2ONFsWVkXr4
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI3ODQxMjksImV4cCI6MTY3Mjg3MDUyOX0.2ISUeJib46fmdRuDOQbzG6R973WafsTMFcrjsc25cxc
 
 {
   "email": "mohan123@gmail.com",
-  "submissionDate": "2022-11-28T00:00:00.000Z",
-  "dayReading": 200,
-  "nightReading": 500,
-  "gasReading": 1600
+  "submissionDate": "2022-12-28T00:00:00.000Z",
+  "dayReading": 400,
+  "nightReading": 850,
+  "gasReading": 2500
 }
 
 ###

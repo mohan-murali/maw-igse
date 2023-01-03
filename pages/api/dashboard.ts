@@ -15,9 +15,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
-    const {
-      method,
-    } = req;
+    const { method } = req;
 
     const client = await clientPromise;
     const db = client.db("test-env");
@@ -31,14 +29,11 @@ export default async function handler(
         .json({ message: "No token found. Authorization Denied" });
     }
 
-
     const tokenUser = jwt.verify(token as string, JWT_KEY) as any;
 
-        if(!tokenUser || !tokenUser.userId){
-          return res
-          .status(401)
-          .json({ message: "Invalid token. Access Denied" });
-        }
+    if (!tokenUser || !tokenUser.userId) {
+      return res.status(401).json({ message: "Invalid token. Access Denied" });
+    }
 
     switch (method) {
       case "POST":
@@ -50,8 +45,6 @@ export default async function handler(
           .sort({ $natural: -1 })
           .limit(1)
           .toArray();
-
-        console.log("body of the req is ->", req.body);
 
         if (prevReadings.length > 0) {
           const tariff = await db.collection("tariff").findOne({});
@@ -73,11 +66,38 @@ export default async function handler(
 
           const days = timeDifference / (1000 * 3600 * 24);
 
+          const avgDay = dayReading - reading.dayReading;
+          const avgNight = nightReading - reading.nightReading;
+          const avgGas = gasReading - reading.gasReading;
+
+          const average = await db.collection("average").findOne({ email });
+
+          if (average && average._id) {
+            console.log("average found");
+            await db.collection("average").updateOne(
+              { _id: average._id },
+              {
+                $set: {
+                  avgDay,
+                  avgNight,
+                  avgGas,
+                },
+              }
+            );
+          } else {
+            console.log("average not found");
+            await db.collection("average").insertOne({
+              avgDay,
+              avgNight,
+              avgGas,
+            });
+          }
+
           if (tariff && days > 0) {
             const totalBill =
-              (dayReading - reading.dayReading) * tariff.electricityDay +
-              (nightReading - reading.nightReading) * tariff.electricityNight +
-              (gasReading - reading.gasReading) * tariff.gas +
+              avgDay * tariff.electricityDay +
+              avgNight * tariff.electricityNight +
+              avgGas * tariff.gas +
               days * tariff.standingCharge;
 
             console.log(totalBill);
@@ -105,23 +125,23 @@ export default async function handler(
           .collection("customer")
           .findOne({ _id: new ObjectId(tokenUser.userId) });
 
-          if (userDetails) {
-            const unpaidBills = await db.collection("bills")
-              .find({ email: { $eq: userDetails.email },
-              isPaid: { $eq: false}})
-              .toArray();
+        if (userDetails) {
+          const unpaidBills = await db
+            .collection("bills")
+            .find({ email: { $eq: userDetails.email }, isPaid: { $eq: false } })
+            .toArray();
 
-              console.log(unpaidBills);
+          console.log(unpaidBills);
 
-                return res.status(200).json({
-                  message:"success",
-                  data: unpaidBills
-                })
-          } else {
-            return res.status(400).json({
-              message: "User not found",
-            });
-          }
+          return res.status(200).json({
+            message: "success",
+            data: unpaidBills,
+          });
+        } else {
+          return res.status(400).json({
+            message: "User not found",
+          });
+        }
     }
   } catch (ex) {
     console.error(ex);

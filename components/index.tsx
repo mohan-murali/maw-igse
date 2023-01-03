@@ -7,3 +7,4 @@ export * from "./FloatLabelInput";
 export * from "./NumberInput";
 export * from "./PasswordInput";
 export * from "./QrReaderInput";
+export * from "./DoughNutChart";

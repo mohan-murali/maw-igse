@@ -41,18 +41,6 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
     getData();
   }, [getData]);
 
-  const resetFormDetail = (detail?: any) => {
-    if (detail) {
-      Object.keys(detail).forEach((k) => {
-        if (detail[k]) {
-          setValue(k, (detail as any)[k], {
-            shouldDirty: true,
-          });
-        }
-      });
-    }
-  };
-
   const toast = useRef(null);
   const showSuccess = () => {
     if (toast && toast.current)
@@ -83,7 +71,7 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
       );
       console.log(res);
       showSuccess();
-      resetFormDetail(data);
+      reset();
       fetchData();
     } catch (e) {
       console.error(e);
@@ -118,7 +106,7 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
   const {
     control,
     handleSubmit,
-    setValue,
+    reset,
     formState: { errors },
   } = useForm();
   return (

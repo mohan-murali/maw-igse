@@ -1,15 +1,17 @@
 import axios from "axios";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { NumberInput } from "./NumberInput";
 
-export interface AdminPriceSettingFormprops {}
+export interface AdminPriceSettingFormprops {
+  tariff: any;
+}
 
-export const AdminPriceSettingForm: React.FC<
-  AdminPriceSettingFormprops
-> = ({}) => {
+export const AdminPriceSettingForm: React.FC<AdminPriceSettingFormprops> = ({
+  tariff,
+}) => {
   const {
     control,
     handleSubmit,
@@ -25,20 +27,26 @@ export const AdminPriceSettingForm: React.FC<
       //@ts-ignore
       toast.current.show({
         severity: "success",
-        summary: "Success Message",
-        detail: "Message Content",
+        summary: "rates updated",
+        detail: "you have successfully updated the rates",
         life: 3000,
       });
   };
+
+  useEffect(() => {
+    reset(tariff);
+  }, [reset, tariff]);
+
   const onSubmit = async (data: any) => {
     try {
       console.log(data);
-      const res = await axios.post("/api/admin", data);
+      const res = await axios.put("/api/admin", data, {
+        headers: {
+          token: window.localStorage.getItem("auth-token"),
+        },
+      });
       showSuccess();
       console.log(res);
-      if (window) {
-        window.localStorage.setItem("auth-token", res.data.token);
-      }
     } catch (e) {
       console.error(e);
     }
@@ -64,7 +72,7 @@ export const AdminPriceSettingForm: React.FC<
           )}
         />
         <Controller
-          name="electricityDay"
+          name="electricityNight"
           control={control}
           rules={{ required: true }}
           render={({ field }) => (
@@ -72,10 +80,10 @@ export const AdminPriceSettingForm: React.FC<
               {...field}
               required
               className="field"
-              id="electricityDay"
+              id="electricityNight"
               isDecimal
               label="Electricity rate for night"
-              isError={!!errors?.electricityDay?.type}
+              isError={!!errors?.electricityNight?.type}
               validationMessage="Electricity for night is required"
             />
           )}
@@ -118,7 +126,7 @@ export const AdminPriceSettingForm: React.FC<
           type="submit"
           icon="pi pi-check"
           iconPos="right"
-          label="Submit Reading"
+          label="Submit Charge"
           className="p-mt-2"
         />
       </form>
