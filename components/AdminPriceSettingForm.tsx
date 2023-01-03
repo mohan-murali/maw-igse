@@ -3,21 +3,19 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { DateInput } from "./DateInput";
 import { NumberInput } from "./NumberInput";
 
-export interface CustomerReadingsFormProps {
-  email: string;
-}
+export interface AdminPriceSettingFormprops {}
 
-export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
-  email,
-}) => {
+export const AdminPriceSettingForm: React.FC<
+  AdminPriceSettingFormprops
+> = ({}) => {
   const {
     control,
     handleSubmit,
     register,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -32,50 +30,24 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
         life: 3000,
       });
   };
-
   const onSubmit = async (data: any) => {
     try {
       console.log(data);
-      data.email = email;
-      const res = await axios.post("/api/dashboard", data, {
-        headers: {
-          token: window.localStorage.getItem("auth-token"),
-        },
-      });
-      console.log(res);
+      const res = await axios.post("/api/admin", data);
       showSuccess();
-      resetFormDetail(data);
+      console.log(res);
+      if (window) {
+        window.localStorage.setItem("auth-token", res.data.token);
+      }
     } catch (e) {
       console.error(e);
     }
   };
-
-  const resetFormDetail = (detail?: any) => {
-    if (detail) {
-      Object.keys(detail).forEach((k) => {
-        if (detail[k]) {
-          setValue(k, (detail as any)[k], {
-            shouldDirty: true,
-          });
-        }
-      });
-    }
-  };
-
   return (
     <div className="form-main">
       <form className="p-fluid" onSubmit={handleSubmit(onSubmit)}>
-        <DateInput
-          className="field"
-          id="submissionDate"
-          required
-          register={register}
-          isError={!!errors?.submissionDate?.type}
-          validationMessage="submission date is required"
-          label="Submission Date"
-        />
         <Controller
-          name="dayReading"
+          name="electricityDay"
           control={control}
           rules={{ required: true }}
           render={({ field }) => (
@@ -83,15 +55,16 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
               {...field}
               required
               className="field"
-              id="dayReading"
-              label="Meter Reading for Day (in kWh)"
-              isError={!!errors?.dayReading?.type}
-              validationMessage="meter reading for day is required"
+              id="electricityDay"
+              isDecimal
+              label="Electricity rate for day"
+              isError={!!errors?.electricityDay?.type}
+              validationMessage="Electricity for day is required"
             />
           )}
         />
         <Controller
-          name="nightReading"
+          name="electricityDay"
           control={control}
           rules={{ required: true }}
           render={({ field }) => (
@@ -99,15 +72,16 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
               {...field}
               required
               className="field"
-              id="nightReading"
-              label="Meter Reading for Night (in kWh)"
-              isError={!!errors?.nightReading?.type}
-              validationMessage="meter reading for night is required"
+              id="electricityDay"
+              isDecimal
+              label="Electricity rate for night"
+              isError={!!errors?.electricityDay?.type}
+              validationMessage="Electricity for night is required"
             />
           )}
         />
         <Controller
-          name="gasReading"
+          name="gas"
           control={control}
           rules={{ required: true }}
           render={({ field }) => (
@@ -115,10 +89,28 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
               {...field}
               required
               className="field"
-              id="gasReading"
-              label="Gas meter reading (in kWh)"
-              isError={!!errors?.gasReading?.type}
-              validationMessage="gas meter reading is required"
+              id="gas"
+              isDecimal
+              label="Gas rate"
+              isError={!!errors?.gas?.type}
+              validationMessage="gas rate is required"
+            />
+          )}
+        />
+        <Controller
+          name="standingCharge"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <NumberInput
+              {...field}
+              required
+              className="field"
+              id="standingCharge"
+              isDecimal
+              label="Standing Charge"
+              isError={!!errors?.standingCharge?.type}
+              validationMessage="Standing charge is required"
             />
           )}
         />

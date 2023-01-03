@@ -25,7 +25,7 @@ Content-Type: application/json
 
 {
   "electricityDay" : 0.34,
-  "electricityNight": 0.2,
+  "electricityDay": 0.2,
   "gas": 0.1,
   "standingCharge": 0.74
 }
@@ -66,7 +66,6 @@ token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThh
 }
 
 ###
-
 PUT http://localhost:3000/api/customer
 Content-Type: application/json
 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI0ODUyMjgsImV4cCI6MTY3MjU3MTYyOH0.n8Z-fY5Fg8468sOOzQiWKSoL-qQRgctu-tuavPu-L10
@@ -75,3 +74,16 @@ token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThh
   "email": "mohan123@gmail.com",
   "currentBalance": 414
 }
+
+### Admin login
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+  "email": "gse@shangrila.gov.un",
+  "password": "gse@energy"
+}
+
+###
+GET http://localhost:3000/api/admin
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FjMDUxNzlhMjY1ZTE5OGUwOTE4NzciLCJpYXQiOjE2NzI3NzYyNjAsImV4cCI6MTY3Mjg2MjY2MH0.52g7GRMFOnaGubsa61-hF5ubq-0hly1gjDctv42SE6A
