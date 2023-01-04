@@ -16,10 +16,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
-    const {
-      query: { id },
-      method,
-    } = req;
+    const { method } = req;
 
     const client = await clientPromise;
     const db = client.db("test-env");

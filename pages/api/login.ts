@@ -19,10 +19,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
-    const {
-      query: { id },
-      method,
-    } = req;
+    const { method } = req;
 
     const client = await clientPromise;
     const db = client.db("test-env");
@@ -80,10 +77,10 @@ export default async function handler(
 
         const tokenUser = jwt.verify(token as string, JWT_KEY) as any;
 
-        if(!tokenUser || !tokenUser.userId){
+        if (!tokenUser || !tokenUser.userId) {
           return res
-          .status(401)
-          .json({ message: "Invalid token. Access Denied" });
+            .status(401)
+            .json({ message: "Invalid token. Access Denied" });
         }
 
         const userDetails = await db

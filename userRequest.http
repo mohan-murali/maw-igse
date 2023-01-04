@@ -88,3 +88,7 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/api/admin
 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FjMDUxNzlhMjY1ZTE5OGUwOTE4NzciLCJpYXQiOjE2NzI3NzYyNjAsImV4cCI6MTY3Mjg2MjY2MH0.52g7GRMFOnaGubsa61-hF5ubq-0hly1gjDctv42SE6A
+
+###
+GET http://localhost:3000/api/igse/propertycount
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzI4MzU4MDgsImV4cCI6MTY3MjkyMjIwOH0.Yji8WeiQCYi66AkolIayk550SMgxuKLtyMbUSocMyiM

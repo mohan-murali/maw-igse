@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../lib/mongodb";
@@ -78,6 +78,7 @@ export default async function handler(
               { _id: average._id },
               {
                 $set: {
+                  email,
                   avgDay,
                   avgNight,
                   avgGas,
@@ -87,6 +88,7 @@ export default async function handler(
           } else {
             console.log("average not found");
             await db.collection("average").insertOne({
+              email,
               avgDay,
               avgNight,
               avgGas,
@@ -143,7 +145,15 @@ export default async function handler(
           });
         }
     }
-  } catch (ex) {
+  } catch (ex: any) {
+    if (ex instanceof TokenExpiredError) {
+      return res.status(401).json({
+        message: ex.message,
+      });
+    }
     console.error(ex);
+    return res.status(500).json({
+      message: ex.message,
+    });
   }
 }
