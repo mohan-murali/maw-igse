@@ -60,6 +60,17 @@ export default async function handler(
             });
           }
 
+          const customer = await db
+            .collection("customer")
+            .findOne({ email: email });
+
+          if (!customer || !customer._id) {
+            return res.status(404).json({
+              message:
+                "The supplied email does not exist. Please check if your session is still valid",
+            });
+          }
+
           const currentDate = new Date(submissionDate);
           const prevDate = new Date(reading.submissionDate);
           const timeDifference = currentDate.getTime() - prevDate.getTime();
@@ -72,7 +83,7 @@ export default async function handler(
 
           const average = await db.collection("average").findOne({ email });
 
-          if (average && average._id) {
+          if (average && average._id && customer) {
             console.log("average found");
             await db.collection("average").updateOne(
               { _id: average._id },
@@ -82,6 +93,9 @@ export default async function handler(
                   avgDay,
                   avgNight,
                   avgGas,
+                  days,
+                  propertyType: customer.propertyType.toLocaleLowerCase(),
+                  numberOfBedroom: customer.numberOfBedroom,
                 },
               }
             );
@@ -92,6 +106,9 @@ export default async function handler(
               avgDay,
               avgNight,
               avgGas,
+              days,
+              propertyType: customer.propertyType.toLocaleLowerCase(),
+              numberOfBedroom: customer.numberOfBedroom,
             });
           }
 

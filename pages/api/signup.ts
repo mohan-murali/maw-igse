@@ -54,7 +54,7 @@ export default async function handler(
       password: hashedPassword,
       email: req.body.email,
       address: req.body.address,
-      propertyType: req.body.propertyType,
+      propertyType: req.body.propertyType.toLocaleLowerCase(),
       numberOfBedroom: req.body.numberOfBedroom,
       balance: 200,
       isAdmin: false,

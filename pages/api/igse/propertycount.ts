@@ -3,16 +3,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../../lib/mongodb";
 
 type Data = {
-  message: string;
-  count?: {
-    detached: number;
-    semiDetached: number;
-    terraced: number;
-    flat: number;
-    cottage: number;
-    bungalow: number;
-    mansion: number;
-  };
+  message?: string;
+  detached?: number;
+  ["semi-detached"]?: number;
+  terraced?: number;
+  flat?: number;
+  cottage?: number;
+  bungalow?: number;
+  mansion?: number;
 };
 
 const JWT_KEY = process.env.JWT_KEY || "";
@@ -85,16 +83,13 @@ export default async function handler(
         }
 
         return res.status(200).json({
-          message: "success",
-          count: {
-            detached,
-            semiDetached,
-            terraced,
-            flat,
-            cottage,
-            bungalow,
-            mansion,
-          },
+          detached,
+          ["semi-detached"]: semiDetached,
+          terraced,
+          flat,
+          cottage,
+          bungalow,
+          mansion,
         });
     }
   } catch (ex: any) {
