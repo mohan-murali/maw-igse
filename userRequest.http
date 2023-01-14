@@ -32,10 +32,9 @@ token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2FjMDUxNzlhMjY1ZTE5
 }
 
 ###
-
 POST http://localhost:3000/api/dashboard
 Content-Type: application/json
-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzMxNjg1NzYsImV4cCI6MTY3MzI1NDk3Nn0.1vEr7XP2DtO_0OiCv9hU_y8XbNP3t0mcNL6Ku4Eki7Y
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzM3MDk4NDUsImV4cCI6MTY3Mzc5NjI0NX0.nAKHkuL4A8Ol8rE7MULTL6qMHX9o0WYCoEZL54T0kyc
 
 {
   "email": "mohan123@gmail.com",
@@ -96,3 +95,11 @@ token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThh
 ###
 GET http://localhost:3000/api/igse/bungalow/10
 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2E4MGFmNzRiM2EyNThhYTQwYmE3NzEiLCJpYXQiOjE2NzMxNjg1NzYsImV4cCI6MTY3MzI1NDk3Nn0.1vEr7XP2DtO_0OiCv9hU_y8XbNP3t0mcNL6Ku4Eki7Y
+
+###
+POST http://localhost:3000/api/voucher
+Content-Type: application/json
+
+{
+  "voucherCode": "TESTVOUC"
+}

@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../lib/mongodb";
+import validateVoucher from "../../lib/voucherValdiator";
 import { user } from "../../models";
 
 type Data = {
@@ -30,20 +31,12 @@ export default async function handler(
       return res.status(400).json({ message: "The email already exists" });
     }
 
-    if (req.body.voucherCode.length != 8) {
-      return res
-        .status(400)
-        .json({ message: "The voucher code is not valid!" });
-    }
+    const isValidVoucher = await validateVoucher(req.body.voucherVode);
 
-    const existingVoucher = await db
-      .collection("voucher")
-      .findOne({ voucherCode: req.body.voucherCode });
-
-    if (existingVoucher && existingVoucher._id) {
-      return res
-        .status(400)
-        .json({ message: "The voucher code is not valid!" });
+    if (!isValidVoucher) {
+      return res.status(403).json({
+        message: "Voucher vode is not valid",
+      });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -58,11 +51,6 @@ export default async function handler(
       numberOfBedroom: req.body.numberOfBedroom,
       balance: 200,
       isAdmin: false,
-    });
-
-    await db.collection("voucher").insertOne({
-      userId: newUser.insertedId,
-      voucherCode: req.body.voucherCode,
     });
 
     const userDetails = await db

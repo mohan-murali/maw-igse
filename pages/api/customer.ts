@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../lib/mongodb";
+import validateVoucher from "../../lib/voucherValdiator";
 
 type Data = {
   message: string;
@@ -63,16 +64,12 @@ export default async function handler(
         });
 
       case "POST":
-        if(req.body.voucherCode.length != 8){
-            return res.status(400).json({message: "The voucher code is not valid!"});
-        }
 
-        const existingVoucher = await db
-            .collection("voucher")
-            .findOne({ voucherCode: req.body.voucherCode});
-
-        if(existingVoucher && existingVoucher._id){
-            return res.status(400).json({message: "The voucher code is not valid!"});
+        const isValidVoucher = await validateVoucher(req.body.voucherCode);
+        if(!isValidVoucher){
+          return res.status(401).json({
+            message: "voucher code is not valid"
+          });
         }
 
         await db.collection("customer").updateOne(
@@ -82,11 +79,6 @@ export default async function handler(
               $currentDate: { lastModified: true },
             }
           );
-
-        await db.collection("voucher").insertOne({
-          userId: tokenUser.insertedId,
-          voucherCode,
-        });
 
         return res.status(200).json({
           message: "balance updated",

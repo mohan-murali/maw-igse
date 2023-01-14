@@ -56,7 +56,7 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
   const onSubmit = async (data: any) => {
     try {
       console.log(data);
-      const res = await axios.put(
+      const res = await axios.post(
         "/api/customer",
         {
           currentBalance: amount,
