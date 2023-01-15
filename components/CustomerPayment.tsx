@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
 }) => {
   const [currentBill, setCurrentBill] = useState(0);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const getData = useCallback(async () => {
     try {
       var res = await axios.get("/api/dashboard", {
@@ -31,6 +33,8 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
           0
         );
         setCurrentBill(bill);
+      } else {
+        setCurrentBill(0);
       }
     } catch (e) {
       console.error(e);
@@ -39,22 +43,36 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
 
   useEffect(() => {
     getData();
-  }, [getData]);
+  }, [getData, amount]);
+
+  const router = useRouter();
 
   const toast = useRef(null);
-  const showSuccess = () => {
+  const showSuccess = (message: string, detail: string) => {
     if (toast && toast.current)
       //@ts-ignore
       toast.current.show({
         severity: "success",
-        summary: "Success Message",
-        detail: "Message Content",
+        summary: message,
+        detail,
+        life: 3000,
+      });
+  };
+
+  const showError = (detail: string) => {
+    if (toast && toast.current)
+      //@ts-ignore
+      toast.current.show({
+        severity: "error",
+        summary: "There was some Error",
+        detail,
         life: 3000,
       });
   };
 
   const onSubmit = async (data: any) => {
     try {
+      setLoading(true);
       console.log(data);
       const res = await axios.post(
         "/api/customer",
@@ -70,23 +88,36 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
         }
       );
       console.log(res);
-      showSuccess();
+      showSuccess(
+        "voucher accepted",
+        "your voucher was accepted. Balance updated successfully"
+      );
       reset();
       fetchData();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      showError(e.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  function ParseFloat(str: any, val: any) {
+    str = str.toString();
+    str = str.slice(0, str.indexOf(".") + val + 1);
+    return Number(str);
+  }
+
   const payBill = async () => {
     try {
+      setLoading(true);
       if (currentBill > amount) {
         setError("Your Balance is low. Please top up");
       } else {
         const res = await axios.put(
           "/api/customer",
           {
-            currentBalance: amount - currentBill,
+            currentBalance: ParseFloat(amount - currentBill, 2),
             email,
           },
           {
@@ -96,10 +127,17 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
           }
         );
         console.log(res);
-        showSuccess();
+        showSuccess(
+          "payment completed",
+          "Your bill payment completed successfully"
+        );
+        fetchData();
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      showError(e.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,12 +152,18 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
       <div className="mb-2">
         Welcome <strong>{email}</strong>.
       </div>
-      <div className="mb-2">Your current balance is: {amount}</div>
+      <div className="mb-2">Your current balance is:</div>
+      <strong>{amount.toFixed(2)}</strong>
       {currentBill > 0 ? (
         <>
           <div>Your total bill amout is: </div>
           <strong>{currentBill}</strong>
-          <Button type="button" label="Pay" onClick={payBill} />
+          <Button
+            type="button"
+            label="Pay"
+            loading={loading}
+            onClick={payBill}
+          />
         </>
       ) : (
         <h6>You have no pending bill</h6>
@@ -154,6 +198,7 @@ export const CustomerPayment: React.FC<CustomerPaymentProps> = ({
           icon="pi pi-check"
           iconPos="right"
           label="Submit Voucher"
+          loading={loading}
           className="p-mt-2"
         />
       </form>

@@ -44,7 +44,7 @@ export default async function handler(
         await db.collection("customer").updateOne(
           { email },
           {
-            $set: { balance: currentBalance },
+            $set: { balance: parseFloat(currentBalance) },
             $currentDate: { lastModified: true },
           }
         );
@@ -64,21 +64,24 @@ export default async function handler(
         });
 
       case "POST":
-
-        const isValidVoucher = await validateVoucher(req.body.voucherCode);
-        if(!isValidVoucher){
+        const isValidVoucher = await validateVoucher(voucherCode);
+        if (!isValidVoucher) {
           return res.status(401).json({
-            message: "voucher code is not valid"
+            message: "voucher code is not valid",
           });
         }
 
-        await db.collection("customer").updateOne(
-            { email },
-            {
-              $set: { balance: currentBalance + 200 },
-              $currentDate: { lastModified: true },
-            }
-          );
+        const balance = parseFloat(currentBalance);
+
+        const result = await db.collection("customer").updateOne(
+          { email },
+          {
+            $set: { balance: balance + 200 },
+            $currentDate: { lastModified: true },
+          }
+        );
+
+        console.log(result);
 
         return res.status(200).json({
           message: "balance updated",

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { NumberInput } from "./NumberInput";
 
@@ -22,6 +22,7 @@ export const AdminPriceSettingForm: React.FC<AdminPriceSettingFormprops> = ({
   } = useForm();
 
   const toast = useRef(null);
+  const [loading, setLoading] = useState(false);
   const showSuccess = () => {
     if (toast && toast.current)
       //@ts-ignore
@@ -39,6 +40,7 @@ export const AdminPriceSettingForm: React.FC<AdminPriceSettingFormprops> = ({
 
   const onSubmit = async (data: any) => {
     try {
+      setLoading(true);
       console.log(data);
       const res = await axios.put("/api/admin", data, {
         headers: {
@@ -49,6 +51,8 @@ export const AdminPriceSettingForm: React.FC<AdminPriceSettingFormprops> = ({
       console.log(res);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -127,6 +131,7 @@ export const AdminPriceSettingForm: React.FC<AdminPriceSettingFormprops> = ({
           icon="pi pi-check"
           iconPos="right"
           label="Submit Charge"
+          loading={loading}
           className="p-mt-2"
         />
       </form>

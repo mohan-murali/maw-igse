@@ -25,6 +25,7 @@ const SignUp: NextPage = () => {
   const router = useRouter();
   const toast = useRef(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const showSuccess = () => {
     if (toast && toast.current)
@@ -38,6 +39,7 @@ const SignUp: NextPage = () => {
   };
   const onSubmit = async (data: any) => {
     try {
+      setLoading(true);
       console.log(data);
       setError("");
       const res = await axios.post("/api/signup", data);
@@ -51,6 +53,8 @@ const SignUp: NextPage = () => {
       console.log(ex);
       //@ts-ignore
       setError(ex.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
   const propertyTypes = [
@@ -181,6 +185,7 @@ const SignUp: NextPage = () => {
                 iconPos="right"
                 label="Sign Up"
                 className="my-2"
+                loading={loading}
               />
               <small>
                 Already have an account? Click <Link href="/">here</Link> to

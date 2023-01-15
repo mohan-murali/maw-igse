@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DateInput } from "./DateInput";
 import { NumberInput } from "./NumberInput";
@@ -20,7 +20,7 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
     setValue,
     formState: { errors },
   } = useForm();
-
+  const [loading, setLoading] = useState(false);
   const toast = useRef(null);
   const showSuccess = () => {
     if (toast && toast.current)
@@ -35,6 +35,7 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
 
   const onSubmit = async (data: any) => {
     try {
+      setLoading(true);
       console.log(data);
       data.email = email;
       const res = await axios.post("/api/dashboard", data, {
@@ -47,6 +48,8 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
       resetFormDetail(data);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,6 +129,7 @@ export const CustomerReadingsForm: React.FC<CustomerReadingsFormProps> = ({
           type="submit"
           icon="pi pi-check"
           iconPos="right"
+          loading={loading}
           label="Submit Reading"
           className="p-mt-2"
         />

@@ -20,20 +20,11 @@ const Login: NextPage = () => {
   const toast = useRef(null);
   const router = useRouter();
   const [error, setError] = useState("");
-
-  const showError = () => {
-    if (toast && toast.current)
-      //@ts-ignore
-      toast.current.show({
-        severity: "error",
-        summary: "Success Message",
-        detail: "Message Content",
-        life: 3000,
-      });
-  };
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: any) => {
     try {
+      setLoading(true);
       console.log(data);
       setError("");
       const res = await axios.post("/api/login", data);
@@ -46,6 +37,8 @@ const Login: NextPage = () => {
       console.log(ex);
       //@ts-ignore
       setError(ex.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,6 +93,7 @@ const Login: NextPage = () => {
                 icon="pi pi-check"
                 iconPos="right"
                 label="Login"
+                loading={loading}
                 className="my-2"
               />
               <small>
